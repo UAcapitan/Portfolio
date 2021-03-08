@@ -5,6 +5,10 @@ import time
 import mysql.connector
 from tkinter import *
 
+# Запрос имени
+name = input()
+print()
+
 # Объект для окна
 screen = Screen()
 
@@ -23,37 +27,6 @@ points_player = 0
 
 # Счёт в конце игры
 points = 0
-
-# Подключение к базе данных
-db_worked = True
-
-try:
-    mydb = mysql.connector.connect(
-    host="localhost",
-    user="root",
-    password="",
-    database="love"
-    )
-except:
-    db_worked = False
-
-print(db_worked)
-
-# i = 0
-# j = 0
-# while i < 10000:
-#     t.goto(i,j)
-#     t.goto(i+10,j)
-#     t.goto(i+25,j+50)
-#     t.goto(i+40, j)
-#     t.goto(i+50,j)
-#     t.goto(i+60, j-40)
-#     t.goto(i+70,j)
-#     i += 100
-
-# i = 0
-# while i < 10000:
-#     t1.goto(random.randint(-300,300),random.randint(-300,300))
 
 # Переменные
 x = 0
@@ -206,34 +179,38 @@ def opponents_move():
     arr_coordinates_t1.append([x1,y1])
     arr_coordinates_t2.append([x2,y2])
 
+# Увеличить количество очков на 100
 def points_update():
     global points_player
     points_player += 100
 
-# Окно меню
-def result_window():
-    label = Label(text="Result")
-    label.pack()
-    label = Label(text="Test")
-    label.pack()
+# Сохранить результат
+def save_results(name, points):
+    f = open('results.txt', 'a')
+    f.write('{} - {}\n'.format(name, points))
+    f.close()
 
+# Открыть результат
+def open_results():
+    f = open('results.txt', 'r')
+    f_text = f.readlines()
+    n = 0
+    for i in f_text:
+        if n > 9:
+            break
+        print(i)
+        n += 1
+
+# Остановить игру
 def stop_game():
     global points
     time_end_game = time.time()
     time_played = time_end_game - time_start_game
     points = round((len(arr_coordinates_player) + points_player) / time_played, 1)
     screen.clear()
-    print(points)
-    result_window()
-
-def result_in_table(name,points,mydb):
-    my_cursor = mydb.cursor()
-    my_cursor.execute("SELECT * FROM users_results ORDER BY points LIMIT 10")
-
-    for i in my_cursor:
-        print(i)
-
-result_in_table('Name',100,mydb)
+    save_results(name, points)
+    open_results()
+    screen._destroy()
 
 # При нажатии кнопки будут использоваться нужные им функции
 keyboard.add_hotkey('up',up)
