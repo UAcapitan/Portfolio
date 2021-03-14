@@ -6,7 +6,7 @@ import mysql.connector
 from tkinter import *
 
 # Запрос имени
-name = input()
+name = input('Name: ')
 print()
 
 # Объект для окна
