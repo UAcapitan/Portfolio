@@ -1,3 +1,55 @@
 body {
-    background: #e7e7e7;
+    background: #ffffff;
+    margin: 0;
+    padding: 0;
+    height: 150vh;
+}
+
+.nav_block {
+    height: 12vh;
+    width: 100vw;
+    background: #ff7e00;
+    position: fixed;
+    z-index: 3;
+}
+
+.nav_block_flex {
+    display: flex;
+}
+
+.nav_block_flex > div {
+    margin-left: 3vw;
+}
+
+.nav_block_flex > div > p > a {
+    text-decoration: none;
+    color: #ffffff;
+}
+
+.nav_block_flex > .nav_block_flex_main > p {
+    font-size: 1.4em;
+    font-weight: 700;
+}
+
+.nav_block_place {
+    height: 12vh;
+}
+
+.main_div_title {
+    background: #bababa;
+    width: 20vw;
+    border: 5px solid #dfdfdf;
+    margin-left: 7vw;
+    margin-top: 5vh;
+}
+
+.main_div_title > h1 {
+    color: #FFFFFF;
+    font-size: 2.2em;
+    text-align: center;
+}
+
+.main_div > pre {
+    margin-left: 7vw;
+    font-size: 1.2em;
 }
