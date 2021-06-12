@@ -1,3 +1,7 @@
+# --------------------------------------
+# Development start date: 23 Apr 2021
+# --------------------------------------
+
 from tkinter import *
 
 # App main window
@@ -17,6 +21,16 @@ class Calculator:
         self.entry_main.grid(row=0,column=0,pady=5,ipady=10, columnspan=4)
 
         # Buttons for calculator
+        menu = Menu(root)
+        root.config(menu=menu)
+        menu.add_command(label='Main')
+        menu.add_command(label='Hard')
+        menu.add_command(label='Percent') 
+        menu.add_command(label='Currencies')
+        menu.add_command(label='Volume')
+        menu.add_command(label='Square')
+        menu.add_command(label='Weight')
+        menu.add_command(label='Quadratic')
         Button(root, text='1', width=7, height=3, command=lambda: self.add_in_list('1')).grid(column=0, row=1)
         Button(root, text='2', width=7, height=3, command=lambda: self.add_in_list('2')).grid(column=1, row=1)
         Button(root, text='3', width=7, height=3, command=lambda: self.add_in_list('3')).grid(column=2, row=1)
@@ -34,6 +48,9 @@ class Calculator:
         Button(root, text='=', width=7, height=3, command=self.equally).grid(column=2, row=4)
         Button(root, text='/', width=7, height=3, command=lambda: self.add_in_list('/')).grid(column=3, row=4)
         Button(root, text='C', width=7, height=3, command=self.clear).grid(column=0, row=5)
+        Button(root, text='(', width=7, height=3, command=lambda: self.add_in_list('(')).grid(column=1, row=5)
+        Button(root, text=')', width=7, height=3, command=lambda: self.add_in_list(')')).grid(column=2, row=5)
+        Button(root, text='<', width=7, height=3, command=self.delete_last_symbol).grid(column=3, row=5)
 
     # Add numbers and operators to main list
     def add_in_list(self, value):
@@ -57,12 +74,17 @@ class Calculator:
     def equally(self):
         answer = eval(''.join(self.main_list))
         del self.main_list
-        self.main_list = [str(answer)]
+        self.main_list = list(str(answer))
         self.set_list_in_entry()
 
     # Clear main entry
     def clear(self):
         self.main_list = []
+        self.set_list_in_entry()
+
+    # Delete last symbol
+    def delete_last_symbol(self):
+        del self.main_list[-1]
         self.set_list_in_entry()
 
 calculator = Calculator(root)
