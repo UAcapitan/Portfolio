@@ -19,6 +19,7 @@ BULLET_COLOR = [10,10,10]
 BOSS_LVL_COLOR = [70,70,70]
 BLOCK_BOSS_COLOR = [30,30,30]
 BOSS_COLOR = [128, 10, 10]
+WARNING_COLOR = [240,240,240]
 
 game_over = False
 
@@ -26,7 +27,7 @@ menu = False
 
 win = False
 
-boss_lvl = 2
+boss_lvl = 100
 
 clock = pygame.time.Clock()
 
@@ -331,6 +332,14 @@ class BossGame(EnemyGame):
         self.last_x = self.x
         self.last_y = self.y
 
+    def boss_lose(self):
+        global win
+        global boss_game
+        if self.health <= 0:
+                del boss_game
+                win = True
+                player_game.health = 100
+
 # Enemy middle
 class EnemyMiddleGame(EnemyGame):
     pass
@@ -365,15 +374,16 @@ class Skill:
 # Skills
 class FreezingSkill(Skill):
     def use(self):
-        if player_game.energy > self.energy:
-            player_game.energy -= self.energy
-            try:
-                for i in range(len(enemy_game)):
-                    del enemy_game[i]
-            except:
-                pass
-            player_game.exp += player_game.lvl * random.randint(1,10)
-            player_game.upLvl()
+        if player_game.lvl < boss_lvl:
+            if player_game.energy > self.energy:
+                player_game.energy -= self.energy
+                try:
+                    for i in range(len(enemy_game)):
+                        del enemy_game[i]
+                except:
+                    pass
+                player_game.exp += player_game.lvl * random.randint(1,10)
+                player_game.upLvl()
 
 class HpRegenSkill(Skill):
     def use(self):
@@ -383,22 +393,25 @@ class HpRegenSkill(Skill):
 
 class ExpUpSkill(Skill):
     def use(self):
-        if player_game.energy > self.energy:
-            player_game.energy -= self.energy
-            player_game.exp += player_game.lvl * 100
-            player_game.upLvl()
+        if player_game.lvl < boss_lvl:
+            if player_game.energy > self.energy:
+                player_game.energy -= self.energy
+                player_game.exp += player_game.lvl * 100
+                player_game.upLvl()
 
 class ClearMapSkill(Skill):
     def use(self):
-        if player_game.energy > self.energy:
-            player_game.energy -= self.energy
-            map_game.create_blind_map()
+        if player_game.lvl < boss_lvl:
+            if player_game.energy > self.energy:
+                player_game.energy -= self.energy
+                map_game.create_blind_map()
 
 class TeleportSkill(Skill):
     def use(self):
-        if player_game.energy > self.energy:
-            player_game.energy -= self.energy
-            map_game.newMap()
+        if player_game.lvl < boss_lvl:
+            if player_game.energy > self.energy:
+                player_game.energy -= self.energy
+                map_game.newMap()
 
 class EnergyRegenSkill(Skill):
     def use(self):
@@ -418,10 +431,11 @@ class BonusCreateSkill(Skill):
 
 class AllRegenSkill(Skill):
     def use(self):
-        if player_game.energy > self.energy:
-            player_game.energy -= self.energy
-            player_game.health = 100
-            player_game.energy = 100
+        if player_game.lvl < boss_lvl:
+            if player_game.energy > self.energy:
+                player_game.energy -= self.energy
+                player_game.health = 100
+                player_game.energy = 100
 
 class ShootSkill(Skill):
     def use(self):
@@ -483,6 +497,50 @@ class KickSkill(Skill):
                         pass
             map_game.updateMapBullet(bullet_game[-1])
 
+class BuildTreeSkill(Skill):
+    def use(self):
+        try:
+            if player_game.lvl < boss_lvl:
+                if player_game.energy > self.energy:
+                    player_game.energy -= self.energy
+                    if player_game.side == 'right':
+                        tree_game.append(TreeGame(player_game.x+1, player_game.y))
+                    elif player_game.side == 'left':
+                        tree_game.append(TreeGame(player_game.x-1, player_game.y))
+                    elif player_game.side == 'up':
+                        tree_game.append(TreeGame(player_game.x, player_game.y-1))
+                    elif player_game.side == 'down':
+                        tree_game.append(TreeGame(player_game.x, player_game.y+1))
+                    map_game.updateMapTree(tree_game[-1])
+        except:
+            pass
+
+class BuildBlockSkill(Skill):
+    def use(self):
+        try:
+            if player_game.lvl >= boss_lvl:
+                if player_game.energy > self.energy:
+                    player_game.energy -= self.energy
+                    if player_game.side == 'right':
+                        tree_game.append(TreeGame(player_game.x+1, player_game.y))
+                    elif player_game.side == 'left':
+                        tree_game.append(TreeGame(player_game.x-1, player_game.y))
+                    elif player_game.side == 'up':
+                        tree_game.append(TreeGame(player_game.x, player_game.y-1))
+                    elif player_game.side == 'down':
+                        tree_game.append(TreeGame(player_game.x, player_game.y+1))
+                    map_game.updateMapTree(tree_game[-1])
+        except:
+            pass
+
+class DamageBossSkill(Skill):
+    def use(self):
+        if player_game.energy > self.energy:
+            if player_game.lvl >= boss_lvl:
+                player_game.energy -= self.energy
+                boss_game.health -= 10
+                boss_game.boss_lose()
+
 # Objects
 map_game = MapGame()
 player_game = PlayerGame()
@@ -515,7 +573,13 @@ skills = [
     ShootSkill('Sh', 20, 'Shoot',
     ['Allows you to shoot a bullet that','destroys everything in its path']),
     KickSkill('K', 10, 'Kick',
-    ['Allows you to destroy everything','that is near the player'])
+    ['Allows you to destroy everything','that is near the player']),
+    BuildTreeSkill('B T', 10, 'Build tree',
+    ['Allows you to build a tree']),
+    BuildBlockSkill('B B', 10, 'Build block',
+    ['Allows you to build a block']),
+    DamageBossSkill('B D', 50, 'Boss damage',
+    ['Remove 10 hp from the boss'])
     ]
 
 # Dialogs
@@ -536,7 +600,7 @@ start_dialogs = [
     'Level up and good luck!',
     'Press the button `i`',
     'to view the abilities.',
-    'The button `x` can',
+    'The button `e` can',
     'activate the ability.',
     ''
 ]
@@ -547,6 +611,8 @@ enemy_counter_time = 0
 hp_regen_timer = 0
 
 energy_regen_timer = 0
+
+bonus_boss_timer = 0
 
 while True:
 
@@ -570,11 +636,6 @@ while True:
             elif i.key == pygame.K_s:
                 player_game.playerDown()
                 player_game.side = 'down'
-            elif i.key == pygame.K_e:
-                player_game.exp += 500
-                player_game.upLvl()
-            elif i.key == pygame.K_z:
-                map_game.newMap()
             elif i.key == pygame.K_RETURN:
                 if game_over:
                     exit()
@@ -583,7 +644,7 @@ while True:
             elif i.key == pygame.K_SPACE:
                 if len(start_dialogs) > start_dialogs_pos + 1:
                     start_dialogs_pos += 1
-            elif i.key == pygame.K_x:
+            elif i.key == pygame.K_e:
                 try:
                     player_game.skills[player_game.skills_pos].use()
                 except:
@@ -637,17 +698,17 @@ while True:
                 e.enemyDown()
         map_game.updateMapEnemyMiddle(e)
 
-    if player_game.lvl >= boss_lvl:
-        random_enemy_move = random.randint(0,4)
-        if random_enemy_move == 0:
-            boss_game.enemyRight()
-        elif random_enemy_move == 1:
-            boss_game.enemyLeft()
-        elif random_enemy_move == 2:
-            boss_game.enemyUp()
-        elif random_enemy_move == 3:
-            boss_game.enemyDown()
-        map_game.updateMapBoss(boss_game)
+        if player_game.lvl >= boss_lvl and not(win):
+            random_enemy_move = random.randint(0,4)
+            if random_enemy_move == 0:
+                boss_game.enemyRight()
+            elif random_enemy_move == 1:
+                boss_game.enemyLeft()
+            elif random_enemy_move == 2:
+                boss_game.enemyUp()
+            elif random_enemy_move == 3:
+                boss_game.enemyDown()
+            map_game.updateMapBoss(boss_game)
 
     try:
         for i in range(len(enemy_game)):
@@ -670,8 +731,9 @@ while True:
 
         for i in range(len(bonus_game)):
             if bonus_game[i].x == player_game.x and bonus_game[i].y == player_game.y:
-                player_game.exp += random.randint(1,25) * player_game.lvl
-                player_game.upLvl()
+                if player_game.lvl < boss_lvl:
+                    player_game.exp += random.randint(1,25) * player_game.lvl
+                    player_game.upLvl()
                 if player_game.energy < 100:
                     player_game.energy += 10
                 player_game.upLvl()
@@ -708,6 +770,20 @@ while True:
                 if bullet_game[i].x == bonus_game[b].x and bullet_game[i].y == bonus_game[b].y:
                     map_game.map[bullet_game[i].y][bullet_game[i].x] = 'bu'
                     del bonus_game[i]
+
+        if player_game.lvl >= boss_lvl:
+            if boss_game.x == player_game.x and boss_game.y == player_game.y:
+                if player_game.energy > 50:
+                    player_game.energy -= 50
+                    boss_game.health -= 50
+                player_game.health -= 50
+                boss_game.boss_lose()
+
+            for i in range(len(bullet_game)):
+                if bullet_game[i].x == boss_game.x and bullet_game[i].y == boss_game.y:
+                    del bullet_game[i]
+                    boss_game.health -= 50
+                    boss_game.boss_lose()
     except:
         pass    
  
@@ -716,6 +792,8 @@ while True:
         screen.fill(GREEN_COLOR)
     else:
         screen.fill(BOSS_LVL_COLOR)
+    if bonus_boss_timer in range(295,298):
+        screen.fill(WARNING_COLOR)
 
     # Draw entities
     for i in map_game.map:
@@ -764,6 +842,25 @@ while True:
         energy_regen_timer = 0
         if player_game.energy < 100 and not game_over:
             player_game.energy += 10
+
+    if player_game.lvl >= boss_lvl:
+        bonus_boss_timer += 1
+
+        if bonus_boss_timer > 300:
+            bonus_boss_timer = 0
+            bonus_game = []
+
+            for i in range(random.randint(0,10)):
+                    bonus_game.append(BonusGame(random.randint(0,18), random.randint(0,8)))
+
+            for b in bonus_game:
+                map_game.updateMapBonus(b)
+
+            map_game.map[boss_game.y][boss_game.x] = 0
+
+            boss_game.x = random.randint(0,18)
+            boss_game.y = random.randint(0,8)
+        
 
     # Scales
     pygame.draw.rect(screen, WHITE_COLOR, (0,200,400,50))
