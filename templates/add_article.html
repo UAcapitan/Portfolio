@@ -4,4 +4,18 @@
 
 {% block content %}
     <h3>Add article</h3>
+    <form method='POST'>
+        <input type='text' name='title' class='form-control' placeholder='Title'>
+        <br>
+        <input type='text' name='tech' class='form-control' placeholder='Technologies'>
+        <br>
+        <textarea name='text' cols="30" rows="10" class='form-control' placeholder='Text'></textarea>
+        <br>
+        <input type='text' name='link' class='form-control' placeholder='Link'>
+        <br>
+        <input type='password' name='password' class='form-control' placeholder='Password'>
+        <br>
+        <input type='submit' class='btn btn-success' value='Create'>
+        <br><br>
+    </form>
 {% endblock %}
