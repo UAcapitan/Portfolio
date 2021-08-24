@@ -4,4 +4,7 @@
 
 {% block content %}
     <h3>Main page</h3>
+    {% for a in articles %}
+        {{ a.title }}
+    {% endfor %}
 {% endblock %}

@@ -22,7 +22,8 @@ class Article(db.Model):
 
 @app.route('/')
 def main():
-    return render_template('main.html')
+    articles = Article.query.order_by(Article.id).all()
+    return render_template('main.html', articles=articles)
 
 @app.route('/article/<int:id>')
 def page(id):
