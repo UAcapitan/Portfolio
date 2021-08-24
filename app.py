@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, redirect
 from flask_sqlalchemy import SQLAlchemy
 from password import password_admin
+from sqlalchemy import desc
 
 app = Flask(__name__)
 
@@ -22,12 +23,13 @@ class Article(db.Model):
 
 @app.route('/')
 def main():
-    articles = Article.query.order_by(Article.id).all()
+    articles = Article.query.order_by(desc(Article.id)).all()
     return render_template('main.html', articles=articles)
 
 @app.route('/article/<int:id>')
 def page(id):
-    return render_template('article.html')
+    article = Article.query.get(id)
+    return render_template('article.html', article=article)
 
 @app.route('/add-article', methods=['POST', 'GET'])
 def add_article():
