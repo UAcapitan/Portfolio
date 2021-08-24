@@ -4,7 +4,18 @@
 
 {% block content %}
     <h3>Main page</h3>
-    {% for a in articles %}
-        {{ a.title }}
-    {% endfor %}
+    <div class="container">
+        <div class="row">
+            {% for a in articles %}
+                <div class="card" style="width: 31%; margin-left: 2%; height: 25rem; margin-top: 3vh;">
+                    <img src="{{ a.img }}" class="card-img-top" alt="Card image">
+                    <div class="card-body">
+                    <h5 class="card-title">{{ a.title }}</h5>
+                    <p class="card-text">{{ a.tech }}</p>
+                    <a href="/article/{{ a.id }}" class="btn btn-primary">Open</a>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
 {% endblock %}
