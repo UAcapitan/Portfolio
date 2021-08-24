@@ -4,9 +4,21 @@
 
 {% block content %}
     <h3>{{ article.title }}</h3>
-    <p>{{ article.tech }}</p>
+    <p class='text-muted'>{{ article.tech }}</p>
     <div>
-        {{ article.text }}
+        <div class="row">
+            <div style="width: 32%; margin-left: 1%; margin-top: 3vh;">
+                <img src="{{ article.img_1 }}" class="card-img-top" alt="Card image">
+            </div>
+            <div style="width: 32%; margin-left: 1%; margin-top: 3vh;">
+                <img src="{{ article.img_2 }}" class="card-img-top" alt="Card image">
+            </div>
+            <div style="width: 32%; margin-left: 1%; margin-top: 3vh;">
+                <img src="{{ article.img_3 }}" class="card-img-top" alt="Card image">
+            </div>
+        </div>
     </div>
+    <br>
+    <p>{{ article.text }}</p>
     <p><a href="{{ article.link }}}">GitHub</a></p>
 {% endblock %}

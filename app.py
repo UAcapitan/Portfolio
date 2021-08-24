@@ -14,7 +14,9 @@ class Article(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(100), nullable=False)
     tech = db.Column(db.String(300), nullable=False)
-    img = db.Column(db.String(300), nullable=False)
+    img_1 = db.Column(db.String(300), nullable=False)
+    img_2 = db.Column(db.String(300), nullable=True)
+    img_3 = db.Column(db.String(300), nullable=True)
     text = db.Column(db.Text, nullable=False)
     link = db.Column(db.String(300), nullable=False)
 
@@ -36,13 +38,15 @@ def add_article():
     if request.method == 'POST':
         title = request.form['title']
         tech = request.form['tech']
-        img = request.form['img']
+        img_1 = request.form['img_1']
+        img_2 = request.form['img_2']
+        img_3 = request.form['img_3']
         text = request.form['text']
         link = request.form['link']
         password = request.form['password']
 
         if password == password_admin:
-            article = Article(title=title, tech=tech, img=img, text=text, link=link)
+            article = Article(title=title, tech=tech, img_1=img_1, img_2=img_2, img_3=img_3, text=text, link=link)
             try:
                 db.session.add(article)
                 db.session.commit()
