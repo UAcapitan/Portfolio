@@ -57,5 +57,11 @@ def add_article():
             return 'Incorrect password'
     return render_template('add_article.html')
 
+@app.route('/article/<int:id>/edit', methods=['POST', 'GET'])
+def edit(id):
+    if request.method == 'POST':
+        return redirect('/')
+    return render_template('edit.html')
+
 if __name__ == '__main__':
     app.run(debug='True')
