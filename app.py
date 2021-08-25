@@ -80,5 +80,9 @@ def edit(id):
             return render_template('error.html', error='Incorrect password')
     return render_template('edit.html', article=article)
 
+@app.route('/article/<int:id>/delete', methods=['POST', 'GET'])
+def delete(id):
+    return render_template('delete.html')
+
 if __name__ == '__main__':
     app.run(debug='True')
