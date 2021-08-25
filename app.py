@@ -59,9 +59,10 @@ def add_article():
 
 @app.route('/article/<int:id>/edit', methods=['POST', 'GET'])
 def edit(id):
+    article = Article.query.get(id)
     if request.method == 'POST':
         return redirect('/')
-    return render_template('edit.html')
+    return render_template('edit.html', article=article)
 
 if __name__ == '__main__':
     app.run(debug='True')
