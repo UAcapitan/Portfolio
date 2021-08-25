@@ -52,16 +52,32 @@ def add_article():
                 db.session.commit()
                 return redirect('/')
             except:
-                return 'Error'
+                return render_template('error.html', error='Error')
         else:
-            return 'Incorrect password'
+            return render_template('error.html', error='Incorrect password')
     return render_template('add_article.html')
 
 @app.route('/article/<int:id>/edit', methods=['POST', 'GET'])
 def edit(id):
     article = Article.query.get(id)
     if request.method == 'POST':
-        return redirect('/')
+        article.title = request.form['title']
+        article.tech = request.form['tech']
+        article.img_1 = request.form['img_1']
+        article.img_2 = request.form['img_2']
+        article.img_3 = request.form['img_3']
+        article.text = request.form['text']
+        article.link = request.form['link']
+        password = request.form['password']
+
+        if password == password_admin:
+            try:
+                db.session.commit()
+                return redirect('/')
+            except:
+                return render_template('error.html', error='Error')
+        else:
+            return render_template('error.html', error='Incorrect password')
     return render_template('edit.html', article=article)
 
 if __name__ == '__main__':
