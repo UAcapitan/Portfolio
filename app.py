@@ -82,7 +82,8 @@ def edit(id):
 
 @app.route('/article/<int:id>/delete', methods=['POST', 'GET'])
 def delete(id):
-    return render_template('delete.html')
+    article = Article.query.get(id)
+    return render_template('delete.html', article=article)
 
 if __name__ == '__main__':
     app.run(debug='True')
