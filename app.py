@@ -83,6 +83,17 @@ def edit(id):
 @app.route('/article/<int:id>/delete', methods=['POST', 'GET'])
 def delete(id):
     article = Article.query.get(id)
+    if request.method == 'POST':
+        password = request.form['password']
+        if password == password_admin:
+            try:
+                db.session.delete(article)
+                db.session.commit()
+                return redirect('/')
+            except:
+                return render_template('error.html', error='Error')
+        else:
+            return render_template('error.html', error='Incorrect password')     
     return render_template('delete.html', article=article)
 
 if __name__ == '__main__':
