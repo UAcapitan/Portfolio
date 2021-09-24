@@ -1,1 +1,1 @@
-password_admin = '12345'
+password_admin = 'edmix'
